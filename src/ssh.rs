@@ -51,6 +51,7 @@ impl Builder {
         let secret_key = SecretKey::from_bytes(&self.secret_key);
         let endpoint = Endpoint::builder()
             .secret_key(secret_key)
+            .discovery_dht()
             .discovery_n0()
             .bind()
             .await?;
