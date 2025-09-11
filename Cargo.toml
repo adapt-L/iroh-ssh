@@ -1,11 +1,11 @@
 [package]
 name = "iroh-ssh"
 description = "ssh without ip"
-license = "MIT"
-authors = ["Zacharias Boehler <rustonbsd@mailfence.com>"]
-repository = "https://github.com/rustonbsd/iroh-ssh"
+license = "GPL-3.0"
+authors = ["Adam Pimentel <adam@adaptl.net>",  "Zacharias Boehler <rustonbsd@mailfence.com>"]
+repository = "https://github.com/adapt-L/iroh-ssh"
 readme = "README.md"
-keywords = ["networking"]
+keywords = ["networking","ssh","iroh"]
 categories = ["network-programming"]
 version = "0.2.6"
 edition = "2024"

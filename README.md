@@ -1,9 +1,4 @@
-[Español](README_es.md) [Portuguese](README_pt.md)
 # iroh-ssh
-
-[![Crates.io](https://img.shields.io/crates/v/iroh-ssh.svg)](https://crates.io/crates/iroh-ssh)
-[![Documentation](https://docs.rs/iroh-ssh/badge.svg)](https://docs.rs/iroh-ssh)
-[![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE)
 
 **SSH to any machine without ip, behind a NAT/firewall without port forwarding or VPN setup.**
 
@@ -29,31 +24,16 @@
 ## Installation
 
 ```bash
-cargo install iroh-ssh
+git clone https://github.com/adapt-L/iroh-ssh.git
+cargo install --path iroh-ssh
 ```
 
-Download and setup the binary automatically for your operating system from [GitHub Releases](https://github.com/rustonbsd/iroh-ssh/releases):
-
-Linux
-```bash
-# Linux
-wget https://github.com/rustonbsd/iroh-ssh/releases/download/0.2.6/iroh-ssh.linux
-chmod +x iroh-ssh.linux
-sudo mv iroh-ssh.linux /usr/local/bin/iroh-ssh
-```
-
-macOS
-```bash
-# macOS arm
-curl -LJO https://github.com/rustonbsd/iroh-ssh/releases/download/0.2.6/iroh-ssh.macos
-chmod +x iroh-ssh.macos
-sudo mv iroh-ssh.macos /usr/local/bin/iroh-ssh
-```
+Download and setup the Windows binary from [GitHub Releases](https://github.com/adapt-L/iroh-ssh/releases):
 
 Windows
 ```bash
 # Windows x86 64bit
-curl -L -o iroh-ssh.exe https://github.com/rustonbsd/iroh-ssh/releases/download/0.2.6/iroh-ssh.exe
+curl -L -o iroh-ssh.exe https://github.com/adapt-L/iroh-ssh/releases/download/0.2.6/iroh-ssh.exe
 mkdir %LOCALAPPDATA%\iroh-ssh
 move iroh-ssh.exe %LOCALAPPDATA%\iroh-ssh\
 setx PATH "%PATH%;%LOCALAPPDATA%\iroh-ssh"
@@ -218,9 +198,10 @@ Display its Node ID and share it to allow connection
 - [x] Add -p flag for persistence
 - [x] Windows service mode
 - [x] Certificate support (`-i` flag)
-- [ ] MacOS service mode
-- [ ] Additional SSH features
+- [ ] OpenRC service script
+- [ ] Reconnect/nohup support
 
 ## License
 
-Licensed under either of Apache License 2.0 or MIT license at your option.
+Code under this branch is distributed under GPLv3 (see LICENSE).
+Sublicensed from work originially distributed under MIT license (see LICENSE_OLD).
