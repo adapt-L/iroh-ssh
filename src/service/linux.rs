@@ -23,8 +23,8 @@ impl Service for LinuxService {
         todo!("service info is not yet supported")
     }
 
-    async fn uninstall() -> anyhow::Result<()> {
-        let path = LinuxService::init_uninstall_script()?;
+    async fn uninstall(service_params: ServiceParams) -> anyhow::Result<()> {
+        let path = LinuxService::init_uninstall_script(service_params)?;
 
         runas::Command::new("sh")
             .arg(path)
@@ -41,38 +41,52 @@ impl LinuxService {
     const INSTALL_SH_BYTES: &str = include_str!("../../service/install_linux.sh");
     const UNINSTALL_SH_BYTES: &str = include_str!("../../service/uninstall_linux.sh");
 
+    
+
     fn init_install_script(service_params: ServiceParams) -> anyhow::Result<std::path::PathBuf> {
         use std::io::Write as _;
+        use std::fs;
+        use std::os::linux::fs::MetadataExt;
 
+        // Only assume that it is safe to run the iroh-ssh service as the user who owns the executable.
+        // It would be unsafe to run the server as root if a normal user has write access to the executable file.
+        let current_exe = std::env::current_exe()?;
+        let owner = users::get_user_by_uid(
+            fs::metadata(&current_exe)?.st_uid()
+        ).ok_or_else(|| anyhow::anyhow!("failed to get executable owner"))?;
+        
         let mut temp_sh = tempfile::Builder::new()
             .prefix("iroh_ssh_install-")
             .suffix(".sh")
             .tempfile_in("/tmp")?;
         temp_sh.write_all(
             LinuxService::INSTALL_SH_BYTES
+                .replace("[INITSYSTEM]", &service_params.init_system)
                 .replace("[SSHPORT]", &service_params.ssh_port.to_string())
-                .replace(
-                    "[BINARYPATH]",
-                    std::env::current_exe()?
-                        .to_str()
-                        .ok_or_else(|| anyhow::anyhow!("failed to get current executable path"))?,
-                )
+                .replace("[BINARYPATH]",
+                    current_exe.to_str().ok_or_else(|| anyhow::anyhow!("failed to get current executable path"))?)
+                .replace("[BINARYOWNER]",
+                    owner.name().to_str().ok_or_else(|| anyhow::anyhow!("failed to get executable owner name"))?)
                 .as_bytes(),
         )?;
         let sh_path = temp_sh.path().to_path_buf();
+        
         temp_sh.keep()?;
 
         Ok(sh_path)
     }
 
-    fn init_uninstall_script() -> anyhow::Result<std::path::PathBuf> {
+    fn init_uninstall_script(service_params: ServiceParams) -> anyhow::Result<std::path::PathBuf> {
         use std::io::Write as _;
 
         let mut temp_sh = tempfile::Builder::new()
             .prefix("iroh_ssh_uninstall-")
             .suffix(".sh")
             .tempfile_in("/tmp")?;
-        temp_sh.write_all(LinuxService::UNINSTALL_SH_BYTES.as_bytes())?;
+        temp_sh.write_all(LinuxService::UNINSTALL_SH_BYTES
+            .replace("[INITSYSTEM]", &service_params.init_system)
+            .as_bytes()
+        )?;
         let sh_path = temp_sh.path().to_path_buf();
         temp_sh.keep()?;
 

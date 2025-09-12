@@ -31,8 +31,11 @@ Connect:
   iroh-ssh -R 123.45.67.89:9000:localhost:8000 ...
 
 Service:
-  // Install as service (linux and windows only, uses persistent keys)
+  // Install as service (uses persistent keys)
   iroh-ssh service install
+
+  // Install as service on OpenRC (defaults to SystemD)
+  iroh-ssh service install --init-sys openrc
 
   // Uninstall service
   iroh-ssh service uninstall
@@ -121,8 +124,13 @@ enum ServiceCommands {
     Install {
         #[arg(long, default_value = "22")]
         ssh_port: u16,
+        #[arg(long, default_value = "systemd")]
+        init_system: String,
     },
-    Uninstall {},
+    Uninstall {
+        #[arg(long, default_value = "systemd")]
+        init_system: String,
+    },
 }
 
 #[tokio::main]
@@ -142,8 +150,8 @@ async fn main() -> anyhow::Result<()> {
             api::server_mode(ssh_port, persist).await
         }
         (Some(Commands::Service { service_command }), _) => match service_command {
-            ServiceCommands::Install { ssh_port } => api::service::install(ssh_port).await,
-            ServiceCommands::Uninstall {} => api::service::uninstall().await,
+            ServiceCommands::Install { ssh_port, init_system } => api::service::install(ssh_port,init_system).await,
+            ServiceCommands::Uninstall { init_system } => api::service::uninstall(init_system).await,
         },
         (Some(Commands::Info {}), _) => api::info_mode().await,
         (None, Some(target)) => {

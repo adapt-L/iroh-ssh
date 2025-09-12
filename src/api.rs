@@ -20,7 +20,7 @@ pub async fn info_mode() -> anyhow::Result<()> {
     }
 
     println!("iroh-ssh version {}", env!("CARGO_PKG_VERSION"));
-    println!("https://github.com/rustonbsd/iroh-ssh");
+    println!("https://github.com/adapt-L/iroh-ssh");
     println!();
 
     if server_key.is_none() && service_key.is_none() {
@@ -51,18 +51,18 @@ pub async fn info_mode() -> anyhow::Result<()> {
 pub mod service {
     use crate::{ServiceParams, install_service, uninstall_service};
 
-    pub async fn install(ssh_port: u16) -> anyhow::Result<()> {
-        if install_service(ServiceParams { ssh_port }).await.is_err() {
-            println!("service install is only supported on linux and windows");
-            anyhow::bail!("service install is only supported on linux and windows");
+    pub async fn install(ssh_port: u16, init_system: String) -> anyhow::Result<()> {
+        if install_service(ServiceParams { ssh_port, init_system }).await.is_err() {
+            println!("service install failed");
+            anyhow::bail!("service install failed");
         }
         Ok(())
     }
 
-    pub async fn uninstall() -> anyhow::Result<()> {
-        if uninstall_service().await.is_err() {
-            println!("service uninstall is only supported on linux or windows");
-            anyhow::bail!("service uninstall is only supported on linux or windows");
+    pub async fn uninstall(init_system: String) -> anyhow::Result<()> {
+        if uninstall_service(ServiceParams { ssh_port: 22, init_system }).await.is_err() {
+            println!("service uninstall failed");
+            anyhow::bail!("service uninstall failed");
         }
         Ok(())
     }

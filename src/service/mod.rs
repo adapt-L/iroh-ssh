@@ -11,6 +11,7 @@ use crate::service::windows::WindowsService;
 #[derive(Debug, Clone)]
 pub struct ServiceParams {
     pub ssh_port: u16,
+    pub init_system: String,
 }
 
 pub trait Service {
@@ -18,7 +19,9 @@ pub trait Service {
         service_params: ServiceParams,
     ) -> impl std::future::Future<Output = anyhow::Result<()>> + Send;
     fn info() -> impl std::future::Future<Output = anyhow::Result<()>> + Send;
-    fn uninstall() -> impl std::future::Future<Output = anyhow::Result<()>> + Send;
+    fn uninstall(
+        service_params: ServiceParams,
+    ) -> impl std::future::Future<Output = anyhow::Result<()>> + Send;
 }
 
 #[allow(unused)]
@@ -32,10 +35,10 @@ pub async fn install_service(service_params: ServiceParams) -> anyhow::Result<()
     }
 }
 
-pub async fn uninstall_service() -> anyhow::Result<()> {
+pub async fn uninstall_service(service_params: ServiceParams) -> anyhow::Result<()> {
     match std::env::consts::OS {
         #[cfg(target_os = "linux")]
-        "linux" => LinuxService::uninstall().await,
+        "linux" => LinuxService::uninstall(service_params).await,
         #[cfg(target_os = "windows")]
         "windows" => WindowsService::uninstall().await,
         _ => anyhow::bail!("service mode is only supported on linux and windows"),

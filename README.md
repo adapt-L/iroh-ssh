@@ -169,9 +169,11 @@ Display its Node ID and share it to allow connection
 > iroh-ssh server --ssh-port 2222    # Custom SSH port (using ephemeral keys)
 
 # Service mode
-> iroh-ssh service install                   # Background daemon (linux and windows only, default port 22)
-> iroh-ssh service install --ssh-port 2222   # Background daemon with custom SSH port
-> iroh-ssh service uninstall                 # Uninstall service
+> iroh-ssh service install                        # Background daemon
+> iroh-ssh service install --ssh-port 2222        # Background daemon with custom SSH port (default is --ssh-port 22)
+> iroh-ssh service install --init-system openrc   # Background daemon for OpenRC (default is --init-sys systemd)
+> iroh-ssh service uninstall                      # Uninstall service
+> iroh-ssh service uninstall --init-system openrc # Uninstall service (OpenRC)
 
 # Client connection
 > iroh-ssh user@<NODE_ID>                           # Connect to remote server
@@ -189,6 +191,11 @@ Display its Node ID and share it to allow connection
 - **Persistent keys**: Uses dedicated `.ssh/iroh_ssh_ed25519` keypair
 - **QUIC encryption**: Transport layer encryption between endpoints
 
+Iroh-SSH is tested with Fedora Linux (SystemD) Gentoo Linux (OpenRC) and Windows 11 before release.
+
+If installed as a service on Linux, the server is supposed to run as the same user that owns the iroh-ssh binary.
+This user can get the nodeid for the service by running `iroh-ssh info`
+
 ## Status
 
 - [x] Password authentication
@@ -198,10 +205,12 @@ Display its Node ID and share it to allow connection
 - [x] Add -p flag for persistence
 - [x] Windows service mode
 - [x] Certificate support (`-i` flag)
-- [ ] OpenRC service script
-- [ ] Reconnect/nohup support
+- [x] OpenRC service script
+- [ ] OpenDoas support for service installation
+- [ ] Cross-compilation support to Windows from Linux
+- [ ] Reconnect/nohup functionality
+- [ ] More SSH features?
 
 ## License
-
 Code under this branch is distributed under GPLv3 (see LICENSE).
 Sublicensed from work originially distributed under MIT license (see LICENSE_OLD).
