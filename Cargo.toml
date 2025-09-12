@@ -13,7 +13,7 @@ edition = "2024"
 [dependencies]
 anyhow = "1.0.99"
 users = "0.11.0"
-iroh = { version = "0.90.0", features = ["discovery-pkarr-dht"] }
+iroh = { version = "0.90.0", features = ["discovery-pkarr-dht","discovery-local-network"] }
 ed25519-dalek = { version = "2.2.0", features = ["rand_core"] }
 rand = "0.8"
 tokio-stream = { version = "0.1.15", features = ["sync"] }
