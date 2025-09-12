@@ -144,7 +144,7 @@ Display its Node ID and share it to allow connection
                                                                          ┆ └────────────┐   ┆
 ┌─[ Server Machine ]──────────────────────────────────────────────────┐  ┆  happens here│   ┆
 │┌─────────────────┐                        ┌─────────────────────┐   │  ┆              │   ┆
-││ Your SSH Daemon │ ◀─[user2@localhost:X]─ │ user2> iroh-ssh     │ ◀───────────────────┘   ┆
+││ Your SSH Daemon │ ◀─[user2@localhost:X]─ │ user3> iroh-ssh     │ ◀───────────────────┘   ┆
 ││ (Not iroh-ssh)  │                        │ server --ssh-port X │   │  ┆                  ┆
 │└─────────────────┘                        └─────────────────────┘   │  ┆                  ┆
 └─────────────────────────────────────────────────────────────────────┘   ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
