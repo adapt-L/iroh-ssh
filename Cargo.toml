@@ -29,7 +29,7 @@ clap = { version = "4.5.45", features = ["derive"] }
 homedir = "0.3.6"
 whoami = "1.6.1"
 z32 = "1.3"
-runas = "1.2.0"
+runas = { git = "https://github.com/adapt-L/rust-runas.git", rev = "bb6ac921ea057d169ac4609848043d1a2257f763" }
 tempfile = "3.21.0"
 
 [profile.release]

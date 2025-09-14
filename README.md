@@ -211,7 +211,7 @@ This user can get the nodeid for the service by running `iroh-ssh info`
 - [x] Windows service mode
 - [x] Certificate support (`-i` flag)
 - [x] OpenRC service script
-- [ ] OpenDoas support for service installation
+- [X] OpenDoas support for service installation
 - [ ] Cross-compilation support to Windows from Linux
 - [ ] Reconnect/nohup functionality
 - [ ] More SSH features?
