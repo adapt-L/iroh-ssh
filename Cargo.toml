@@ -7,7 +7,7 @@ repository = "https://github.com/adapt-L/iroh-ssh"
 readme = "README.md"
 keywords = ["networking","ssh","iroh"]
 categories = ["network-programming"]
-version = "0.2.6"
+version = "0.2.7"
 edition = "2024"
 
 [dependencies]

@@ -31,7 +31,7 @@ cargo install --path iroh-ssh
 If you're on Windows, you can install from the binary on [GitHub Releases](https://github.com/adapt-L/iroh-ssh/releases), and move the executable to your PATH:
 ```bash
 # Windows x86 64bit
-curl -L -o iroh-ssh.exe https://github.com/adapt-L/iroh-ssh/releases/download/0.2.6/iroh-ssh.exe
+curl -L -o iroh-ssh.exe https://github.com/adapt-L/iroh-ssh/releases/download/0.2.7/iroh-ssh.exe
 mkdir %LOCALAPPDATA%\iroh-ssh
 move iroh-ssh.exe %LOCALAPPDATA%\iroh-ssh\
 setx PATH "%PATH%;%LOCALAPPDATA%\iroh-ssh"
