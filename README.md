@@ -187,8 +187,9 @@ Display its Node ID and share it to allow connection
 > iroh-ssh -i ~/.ssh/id_rsa_my_cert user@<NODE_ID>  # Connect with certificate
 > iroh-ssh -L [bind_address:]port:host:hostport user@<NODE_ID>  # Forward connections made to client (bind_addr:port) to server (host:hostport)
 > iroh-ssh -R [bind_address:]port:host:hostport user@<NODE_ID>  # Forward connections made to server (bind_addr:port) to client (host:hostport)
-
+> iroh-ssh connect user@<NODE_ID> -- 'screen -d -R' # Arguments after -- get passed to ssh.
 ```
+If the connection is unstable you may want to keep the session open with GNU Screen as shown above.
 
 ## Security Model
 
@@ -217,7 +218,6 @@ The Windows executable is built on Windows 10 with the stable-x86_64-pc-windows-
 - [x] Certificate support (`-i` flag)
 - [x] OpenRC service script
 - [X] OpenDoas support for service installation
-- [ ] Reconnect/nohup functionality
 - [ ] More SSH features?
 - [ ] Cross-compilation support to Windows from Linux
 
