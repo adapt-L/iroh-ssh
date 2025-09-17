@@ -53,6 +53,7 @@ impl Builder {
             .secret_key(secret_key)
             .discovery_local_network()
             .discovery_dht()
+            .discovery_n0()
             .bind()
             .await?;
 

@@ -52,7 +52,13 @@ pub mod service {
     use crate::{ServiceParams, install_service, uninstall_service};
 
     pub async fn install(ssh_port: u16, init_system: String) -> anyhow::Result<()> {
-        if install_service(ServiceParams { ssh_port, init_system }).await.is_err() {
+        if install_service(ServiceParams {
+            ssh_port,
+            init_system,
+        })
+        .await
+        .is_err()
+        {
             println!("service install failed");
             anyhow::bail!("service install failed");
         }
@@ -60,7 +66,13 @@ pub mod service {
     }
 
     pub async fn uninstall(init_system: String) -> anyhow::Result<()> {
-        if uninstall_service(ServiceParams { ssh_port: 22, init_system }).await.is_err() {
+        if uninstall_service(ServiceParams {
+            ssh_port: 22,
+            init_system,
+        })
+        .await
+        .is_err()
+        {
             println!("service uninstall failed");
             anyhow::bail!("service uninstall failed");
         }

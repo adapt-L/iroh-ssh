@@ -40,7 +40,7 @@ pub async fn uninstall_service(service_params: ServiceParams) -> anyhow::Result<
         #[cfg(target_os = "linux")]
         "linux" => LinuxService::uninstall(service_params).await,
         #[cfg(target_os = "windows")]
-        "windows" => WindowsService::uninstall().await,
+        "windows" => WindowsService::uninstall(service_params).await,
         _ => anyhow::bail!("service mode is only supported on linux and windows"),
     }
 }

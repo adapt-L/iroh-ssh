@@ -65,7 +65,7 @@ impl Service for WindowsService {
         todo!("service info is not yet supported")
     }
 
-    async fn uninstall() -> anyhow::Result<()> {
+    async fn uninstall(_service_params: ServiceParams) -> anyhow::Result<()> {
         let nssm_path = WindowsService::init_nssm()?;
         let ps1_script = WindowsService::UNINSTALL_PS1_BYTES
             .replace("[__SERVICE_NAME__]", WindowsService::SERVICE_NAME)
@@ -97,7 +97,7 @@ impl WindowsService {
     const SERVICE_NAME: &str = "iroh-ssh";
     const BINARY_DIR: &str = "C:\\ProgramData\\iroh-ssh";
 
-    const NSSM_BYTES: &[u8] = include_bytes!("../../service/nssm.exe");
+    const NSSM_BYTES: &[u8] = include_bytes!("../../service/nssm-2.24/win64/nssm.exe");
     const INSTALL_PS1_BYTES: &str = include_str!("../../service/install.ps1");
     const UNINSTALL_PS1_BYTES: &str = include_str!("../../service/uninstall.ps1");
 

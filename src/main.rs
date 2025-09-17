@@ -150,8 +150,13 @@ async fn main() -> anyhow::Result<()> {
             api::server_mode(ssh_port, persist).await
         }
         (Some(Commands::Service { service_command }), _) => match service_command {
-            ServiceCommands::Install { ssh_port, init_system } => api::service::install(ssh_port,init_system).await,
-            ServiceCommands::Uninstall { init_system } => api::service::uninstall(init_system).await,
+            ServiceCommands::Install {
+                ssh_port,
+                init_system,
+            } => api::service::install(ssh_port, init_system).await,
+            ServiceCommands::Uninstall { init_system } => {
+                api::service::uninstall(init_system).await
+            }
         },
         (Some(Commands::Info {}), _) => api::info_mode().await,
         (None, Some(target)) => {

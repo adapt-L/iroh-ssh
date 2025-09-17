@@ -28,9 +28,7 @@ git clone https://github.com/adapt-L/iroh-ssh.git
 cargo install --path iroh-ssh
 ```
 
-Download and setup the Windows binary from [GitHub Releases](https://github.com/adapt-L/iroh-ssh/releases):
-
-Windows
+If you're on Windows, you can install from the binary on [GitHub Releases](https://github.com/adapt-L/iroh-ssh/releases), and move the executable to your PATH:
 ```bash
 # Windows x86 64bit
 curl -L -o iroh-ssh.exe https://github.com/adapt-L/iroh-ssh/releases/download/0.2.6/iroh-ssh.exe
@@ -54,6 +52,9 @@ Verify that the installation was successful
 # Connect from anywhere
 > iroh-ssh my-user@38b7dc10df96005255c3beaeaeef6cfebd88344aa8c85e1dbfc1ad5e50f372ac
 ```
+
+You'll still need to set up SSH on the server side.
+For Linux this will be straightforward, but for Windows you may want to read [OpenSSH installation on windows](https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse) and [Passwordless OpenSSH configuration on windows](https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement)
 
 Works through any firewall, NAT, or private network. No configuration needed.
 
@@ -196,10 +197,14 @@ Display its Node ID and share it to allow connection
 - **Persistent keys**: Uses dedicated `.ssh/iroh_ssh_ed25519` keypair
 - **QUIC encryption**: Transport layer encryption between endpoints
 
-Iroh-SSH is tested with Fedora Linux (SystemD) Gentoo Linux (OpenRC) and Windows 11 before release.
+Iroh-SSH is tested with Fedora Linux (SystemD) Gentoo Linux (OpenRC) and Windows 10 before release.
 
 If installed as a service on Linux, the server is supposed to run as the same user that owns the iroh-ssh binary.
-This user can get the nodeid for the service by running `iroh-ssh info`
+This user can get the nodeid for the service by running `iroh-ssh info`.
+
+If installed as a service on Windows, the server runs as the local system account. You can get the nodeid by checking the log at  `C:\ProgramData\iroh-ssh\iroh-ssh.log` or running PowerShell as administrator and using `iroh-ssh info`.
+
+The Windows executable is built on Windows 10 with the stable-x86_64-pc-windows-msvc toolchain until I can figure out cross-compilation.
 
 ## Status
 
@@ -212,9 +217,9 @@ This user can get the nodeid for the service by running `iroh-ssh info`
 - [x] Certificate support (`-i` flag)
 - [x] OpenRC service script
 - [X] OpenDoas support for service installation
-- [ ] Cross-compilation support to Windows from Linux
 - [ ] Reconnect/nohup functionality
 - [ ] More SSH features?
+- [ ] Cross-compilation support to Windows from Linux
 
 ## License
 Code under this branch is distributed under GPLv3 (see LICENSE).

@@ -12,7 +12,6 @@ edition = "2024"
 
 [dependencies]
 anyhow = "1.0.99"
-users = "0.11.0"
 iroh = { version = "0.90.0", features = ["discovery-pkarr-dht","discovery-local-network"] }
 ed25519-dalek = { version = "2.2.0", features = ["rand_core"] }
 rand = "0.8"
@@ -31,6 +30,9 @@ whoami = "1.6.1"
 z32 = "1.3"
 runas = { git = "https://github.com/adapt-L/rust-runas.git", rev = "bb6ac921ea057d169ac4609848043d1a2257f763" }
 tempfile = "3.21.0"
+
+[target.'cfg(unix)'.dependencies]
+users = "0.11.0"
 
 [profile.release]
 opt-level = 3
