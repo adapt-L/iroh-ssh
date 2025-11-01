@@ -5,9 +5,15 @@ use anyhow::bail;
 use ed25519_dalek::SECRET_KEY_LENGTH;
 use homedir::my_home;
 use iroh::{
-	Endpoint, NodeId, SecretKey, Watcher,
+	Endpoint, EndpointId, SecretKey,
 	endpoint::Connection,
 	protocol::{ProtocolHandler, Router},
+	discovery::{
+		mdns::MdnsDiscovery,
+		pkarr::dht::DhtDiscovery,
+		dns::DnsDiscovery,
+		pkarr::PkarrPublisher
+	}
 };
 use tokio::{
 	net::{TcpListener, TcpStream},
@@ -17,7 +23,7 @@ use tokio::{
 impl Builder {
 	pub fn new() -> Self {
 		Self {
-			secret_key: SecretKey::generate(rand::rngs::OsRng).to_bytes(),
+			secret_key: SecretKey::generate(&mut rand::rng()).to_bytes(),
 			accept_incoming: false,
 			accept_port: None,
 		}
@@ -51,16 +57,15 @@ impl Builder {
 		let secret_key = SecretKey::from_bytes(&self.secret_key);
 		let endpoint = Endpoint::builder()
 			.secret_key(secret_key)
-			.discovery_local_network()
-			.discovery_dht()
-			.discovery_n0()
+			.discovery(MdnsDiscovery::builder())
+			.discovery(DhtDiscovery::builder())
+			.discovery(DnsDiscovery::n0_dns())
+			.discovery(PkarrPublisher::n0_dns())
 			.bind()
 			.await?;
 
-		let _ = endpoint.home_relay().initialized().await?;
-
 		let mut iroh_ssh = IrohSsh {
-			public_key: *endpoint.node_id().as_bytes(),
+			public_key: *endpoint.id().as_bytes(),
 			secret_key: self.secret_key,
 			inner: None,
 			ssh_port: self.accept_port.unwrap_or(22),
@@ -102,7 +107,7 @@ impl IrohSsh {
 	pub async fn connect(
 		&self,
 		ssh_user: &str,
-		node_id: NodeId,
+		node_id: EndpointId,
 		client_options: ClientOptions,
 		execute_command: Vec<String>,
 	) -> anyhow::Result<Child> {
@@ -175,12 +180,12 @@ impl IrohSsh {
 		Ok(ssh_process)
 	}
 
-	pub fn node_id(&self) -> NodeId {
+	pub fn node_id(&self) -> EndpointId {
 		self.inner
 			.as_ref()
 			.expect("inner not set")
 			.endpoint
-			.node_id()
+			.id()
 	}
 }
 
@@ -193,7 +198,7 @@ impl ProtocolHandler for IrohSsh {
 			return Err(iroh::protocol::AcceptError::NotAllowed {});
 		}
 
-		let node_id = connection.remote_node_id()?;
+		let node_id = connection.remote_id()?;
 		println!("{}: {node_id} connected", String::from_utf8_lossy(&alpn));
 
 		match connection.accept_bi().await {
@@ -243,13 +248,6 @@ pub fn dot_ssh(
 	#[allow(unused_mut)]
 	let mut ssh_dir = distro_home.join(".ssh");
 
-	// For now linux services are installed as "sudo'er" so
-	// we need to use the root .ssh directory
-	#[cfg(target_os = "linux")]
-	if _service {
-		ssh_dir = std::path::PathBuf::from("/root/.ssh");
-	}
-
 	// Weird windows System service profile location:
 	// "C:\WINDOWS\system32\config\systemprofile\.ssh"
 	#[cfg(target_os = "windows")]
@@ -285,11 +283,11 @@ pub fn dot_ssh(
 				}
 			} else {
 				let key = default_secret_key.clone();
-				let secret_key = key.secret();
+				let secret_key = key.clone();
 				let public_key = key.public();
 
 				std::fs::write(pub_key, z32::encode(public_key.as_bytes()))?;
-				std::fs::write(priv_key, z32::encode(secret_key.as_bytes()))?;
+				std::fs::write(priv_key, z32::encode(&secret_key.to_bytes()))?;
 				Ok(key)
 			}
 		}

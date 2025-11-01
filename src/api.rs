@@ -2,13 +2,13 @@ use std::{path::PathBuf, str::FromStr as _};
 
 use anyhow::bail;
 use homedir::my_home;
-use iroh::{NodeId, SecretKey};
+use iroh::{EndpointId, SecretKey};
 
 use crate::{IrohSsh, dot_ssh};
 
 pub async fn info_mode() -> anyhow::Result<()> {
-	let server_key = dot_ssh(&SecretKey::generate(rand::rngs::OsRng), false, false).ok();
-	let service_key = dot_ssh(&SecretKey::generate(rand::rngs::OsRng), false, true).ok();
+	let server_key = dot_ssh(&SecretKey::generate(&mut rand::rng()), false, false).ok();
+	let service_key = dot_ssh(&SecretKey::generate(&mut rand::rng()), false, true).ok();
 
 	if server_key.is_none() && service_key.is_none() {
 		println!(
@@ -135,10 +135,10 @@ pub async fn client_mode(
 	Ok(())
 }
 
-fn parse_iroh_target(target: &str) -> anyhow::Result<(String, NodeId)> {
+fn parse_iroh_target(target: &str) -> anyhow::Result<(String, EndpointId)> {
 	let (user, node_id_str) = target
 		.split_once('@')
 		.ok_or_else(|| anyhow::anyhow!("Invalid format, use user@node_id"))?;
-	let node_id = NodeId::from_str(node_id_str)?;
+	let node_id = EndpointId::from_str(node_id_str)?;
 	Ok((user.to_string(), node_id))
 }
